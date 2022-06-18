@@ -289,7 +289,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                   {item.costOfTime.minutes} m{" "}
                   <OffsetBtnArray
                     item={item}
-                    nums={[1, -1]}
+                    nums={[1, 5, -1, -5]}
                     cb={(item, num) => addItemCost(item, { minutes: num })}
                   ></OffsetBtnArray>
                 </td>
