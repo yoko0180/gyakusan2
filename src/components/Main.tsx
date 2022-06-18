@@ -53,7 +53,7 @@ type ViewMode = "selectShop" | "jouon" | "chilled"
 const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const STORAGE_KEY = "items"
   //
-  const initialGoal = df.set(add(new Date(), { hours: 10 }), {minutes:0})
+  const initialGoal = df.set(add(new Date(), { hours: 10 }), { minutes: 0 })
   const [goalDate, setGoalDate] = useState<Date>(initialGoal)
   const [items, setItems] = useState<Item[]>([])
   const [itemsView, setItemsView] = useState<ItemView[]>([])
@@ -148,6 +148,26 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     setItems([])
   }
 
+  const moveUpItem = (item: Item) => {
+    // 内部データのitemsは先頭から追加した順番どおりに格納される
+    // 画面表示は逆順に表示するので、表示通りで順番を変えるために逆順にしたリストを基準にする
+    const _items = items.reverse()
+    const index = _items.findIndex((i) => i.id === item.id)
+    if (index < 1) return
+    // [0, 1, 2, 3, 4, 5]
+    // ひとつ前よりも前部分
+    let front = _items.slice(0, index - 1)
+    let back = _items.slice(index + 1)
+    back.unshift(_items[index - 1])
+
+    console.log("front", front)
+    console.log("back", back)
+
+    const new_items = front.concat([item]).concat(back)
+    console.log("new_items", new_items)
+
+    setItems(new_items.reverse())
+  }
   // const BtnAddNum: React.FC<{
   //   shop: Shop
   //   hin: Hinmoku
@@ -304,7 +324,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
           {itemsView.map((item) => {
             return (
               <tr key={item.id}>
-                <td>{item.label}</td>
+                <td>
+                  {item.label}
+
+                  <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={() => moveUpItem(item)}>
+                    up
+                  </button>
+                </td>
                 <td>
                   {/* <span className="hours-label text-2xl">{item.costOfTime.hours}</span>h */}
                   <CostLabel num={item.costOfTime.hours} label="h"></CostLabel>
