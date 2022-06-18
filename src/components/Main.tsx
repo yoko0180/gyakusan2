@@ -240,6 +240,15 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       </>
     )
   }
+  const TimeLabel: React.FC<{
+    time: Date
+  }> = ({ time }) => {
+    return (
+      <>
+        <span className="hours-label text-2xl">{format(time, "MM-dd HH:mm")}</span>
+      </>
+    )
+  }
 
   return (
     <div className="App p-5">
@@ -307,7 +316,9 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                     cb={(item, num) => addItemCost(item, { minutes: num })}
                   ></OffsetBtnArray>
                 </td>
-                <td>{format(item.time, "MM-dd HH:mm")}</td>
+                <td>
+                  <TimeLabel time={item.time}></TimeLabel>
+                </td>
               </tr>
             )
           })}
