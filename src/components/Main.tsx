@@ -1,4 +1,4 @@
-import { add, parse, format } from "date-fns"
+import { add, sub, parse, format, Duration } from "date-fns"
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 // import json from './commands.json'
@@ -34,14 +34,14 @@ const OptionCheckbox: React.FC<{
 
 // 逆算アイテム
 // 所要時間を持ち、アイテムを複数積み上げることで逆算していく
-type CostTime = {
-  hour: number
-  minutes: number
-}
+// type CostTime = {
+//   hour: number
+//   minutes: number
+// }
 type Item = {
   id: string
   label: string
-  costOfTime: CostTime
+  costOfTime: Duration
 }
 type ItemView = Item & {
   time: Date
@@ -82,11 +82,11 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   }, [history.location, title])
 
   const addItem = () => {
-    const item = {
+    const item: Item = {
       id: "item_" + Date.now(),
       label: inputLabel,
       costOfTime: {
-        hour: +inputHours,
+        hours: +inputHours,
         minutes: +inputMinutes,
       },
     }
@@ -97,6 +97,16 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     )
   }
 
+  // 指定アイテムのコスト加算
+  const addItemCost = (item: Item, du: Duration) => {
+    setItems(items.map(i => {
+      if (item.id === i.id) {
+        return item
+      }
+      return item
+    }))
+  
+  }
   const deleteItems = () => {
     setItems([])
   }
@@ -118,22 +128,22 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     save(STORAGE_KEY, items)
 
     // 最後のアイテムの時刻を基準に順番に時刻を算出する
-    const costDuration = (cost: CostTime) => ({ hours: cost.hour * -1, minutes: cost.minutes * -1 })
+    // const costDuration = (cost: Duration) => ({ hours: cost.hours * -1, minutes: cost.minutes * -1 })
     let preTime = goalDate
     setItemsView(
       items
         .map((item, index) => {
           let time = goalDate
-          const cost = costDuration(item.costOfTime)
+          const cost = item.costOfTime
           // itemsには内部的にゴールから順のリスト
           // 順番にコスト時間を引いた時刻を算出していく
           // if (index !== items.length -1 ) {
           if (index === 0) {
-            time = add(goalDate, cost)
+            time = sub(goalDate, cost)
           }
           if (index !== 0) {
             const pre = items[index - 1]
-            time = add(preTime, cost)
+            time = sub(preTime, cost)
           }
           preTime = time
           return {
@@ -209,7 +219,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               <tr key={item.id}>
                 <td>{item.label}</td>
                 <td>
-                  {item.costOfTime.hour} h<OffsetBtn onClick={() => {}} num={1}></OffsetBtn>
+                  {item.costOfTime.hours} h<OffsetBtn onClick={() => {}} num={1}></OffsetBtn>
                 </td>
                 <td>{item.costOfTime.minutes} m</td>
                 <td>{format(item.time, "MM-dd HH:mm")}</td>
