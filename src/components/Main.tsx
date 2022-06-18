@@ -300,7 +300,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                   <OffsetBtnHours item={item} nums={[1, -1]}></OffsetBtnHours>
                 </td>
                 <td>
-                  {item.costOfTime.minutes} m{" "}
+                  <CostLabel num={item.costOfTime.minutes} label="m"></CostLabel>
                   <OffsetBtnArray
                     item={item}
                     nums={[1, 5, -1, -5]}
