@@ -102,7 +102,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   }
 
   const addDuration = (d1: Duration, d2: Duration): Duration => {
-    const toNum = (n: number|undefined) => {
+    const toNum = (n: number | undefined) => {
       if (n === undefined) return 0
       if (n === null) return 0
       return n
@@ -112,17 +112,17 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     // }
     const ret = {
       ...d1,
-      hours: toNum(d1.hours) + toNum( d2.hours ),
+      hours: toNum(d1.hours) + toNum(d2.hours),
       minutes: toNum(d1.minutes) + toNum(d2.minutes),
     }
-    console.log('addDuration', d1, d2, ret);
-    
+    console.log("addDuration", d1, d2, ret)
+
     return ret
   }
   // 指定アイテムのコスト加算
   const addItemCost = (item: Item, du: Duration) => {
-    console.log('items', items);
-    
+    console.log("items", items)
+
     setItems(
       items.map((i) => {
         if (item.id === i.id) {
