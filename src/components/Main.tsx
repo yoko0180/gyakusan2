@@ -193,6 +193,26 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       {num}
     </button>
   )
+  const OffsetBtnHours: React.FC<{
+    item: Item
+    nums: number[]
+  }> = ({ item, nums, children }) => {
+    return (
+      <>
+        {nums.map((num) => {
+          return (
+            <OffsetBtn
+              onClick={() => {
+                addItemCost(item, { hours: num })
+              }}
+              num={num}
+            ></OffsetBtn>
+          )
+        })}
+      </>
+    )
+  }
+
   return (
     <div className="App p-5">
       <label htmlFor="">
@@ -248,18 +268,8 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                 <td>{item.label}</td>
                 <td>
                   {item.costOfTime.hours} h
-                  <OffsetBtn
-                    onClick={() => {
-                      addItemCost(item, { hours: 1 })
-                    }}
-                    num={1}
-                  ></OffsetBtn>
-                  <OffsetBtn
-                    onClick={() => {
-                      addItemCost(item, { hours: -1 })
-                    }}
-                    num={-1}
-                  ></OffsetBtn>
+
+                  <OffsetBtnHours item={item} nums={[1, -1]}></OffsetBtnHours>
                 </td>
                 <td>{item.costOfTime.minutes} m</td>
                 <td>{format(item.time, "MM-dd HH:mm")}</td>
