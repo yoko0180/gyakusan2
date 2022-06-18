@@ -116,7 +116,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       return n
     }
     const hours = toNum(d1.hours) + toNum(d2.hours)
-    const mins = toNum(d1.minutes) + toNum(d2.minutes) 
+    const mins = toNum(d1.minutes) + toNum(d2.minutes)
     const ret = {
       ...d1,
       hours: rangeLimit(hours, 0, 99),
@@ -229,6 +229,18 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     )
   }
 
+  const CostLabel: React.FC<{
+    num: number | undefined
+    label: string
+  }> = ({ num, label }) => {
+    return (
+      <>
+        <span className="hours-label text-2xl">{num}</span>
+        <span>{label}</span>
+      </>
+    )
+  }
+
   return (
     <div className="App p-5">
       <label htmlFor="">
@@ -283,7 +295,9 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               <tr key={item.id}>
                 <td>{item.label}</td>
                 <td>
-                  {item.costOfTime.hours} h<OffsetBtnHours item={item} nums={[1, -1]}></OffsetBtnHours>
+                  {/* <span className="hours-label text-2xl">{item.costOfTime.hours}</span>h */}
+                  <CostLabel num={item.costOfTime.hours} label="h"></CostLabel>
+                  <OffsetBtnHours item={item} nums={[1, -1]}></OffsetBtnHours>
                 </td>
                 <td>
                   {item.costOfTime.minutes} m{" "}
