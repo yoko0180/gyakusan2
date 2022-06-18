@@ -193,23 +193,32 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       {num}
     </button>
   )
-  const OffsetBtnHours: React.FC<{
+  const OffsetBtnArray: React.FC<{
     item: Item
     nums: number[]
-  }> = ({ item, nums, children }) => {
+    cb: (item: Item, du: Duration) => void
+  }> = ({ item, nums, cb,  children }) => {
     return (
       <>
         {nums.map((num) => {
           return (
             <OffsetBtn
               onClick={() => {
-                addItemCost(item, { hours: num })
+                cb(item, { hours: num })
               }}
               num={num}
             ></OffsetBtn>
           )
         })}
       </>
+    )
+  }
+  const OffsetBtnHours: React.FC<{
+    item: Item
+    nums: number[]
+  }> = ({ item, nums, children }) => {
+    return (
+      <OffsetBtnArray item={item} nums={nums} cb={addItemCost}></OffsetBtnArray>
     )
   }
 
