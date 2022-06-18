@@ -110,10 +110,17 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     // const _add = (d1: Duration, d2: Duration) => {
     //   return toNum(d1) + toNum(d2)
     // }
+    const rangeLimit = (n: number, min: number, max: number) => {
+      if (n < min) return min
+      if (n > max) return max
+      return n
+    }
+    const hours = toNum(d1.hours) + toNum(d2.hours)
+    const mins = toNum(d1.minutes) + toNum(d2.minutes) 
     const ret = {
       ...d1,
-      hours: toNum(d1.hours) + toNum(d2.hours),
-      minutes: toNum(d1.minutes) + toNum(d2.minutes),
+      hours: rangeLimit(hours, 0, 99),
+      minutes: rangeLimit(mins, 0, 59),
     }
     console.log("addDuration", d1, d2, ret)
 
@@ -196,15 +203,15 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const OffsetBtnArray: React.FC<{
     item: Item
     nums: number[]
-    cb: (item: Item, du: Duration) => void
-  }> = ({ item, nums, cb,  children }) => {
+    cb: (item: Item, num: number) => void
+  }> = ({ item, nums, cb, children }) => {
     return (
       <>
         {nums.map((num) => {
           return (
             <OffsetBtn
               onClick={() => {
-                cb(item, { hours: num })
+                cb(item, num)
               }}
               num={num}
             ></OffsetBtn>
@@ -218,7 +225,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     nums: number[]
   }> = ({ item, nums, children }) => {
     return (
-      <OffsetBtnArray item={item} nums={nums} cb={addItemCost}></OffsetBtnArray>
+      <OffsetBtnArray item={item} nums={nums} cb={(item, num) => addItemCost(item, { hours: num })}></OffsetBtnArray>
     )
   }
 
@@ -276,11 +283,16 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               <tr key={item.id}>
                 <td>{item.label}</td>
                 <td>
-                  {item.costOfTime.hours} h
-
-                  <OffsetBtnHours item={item} nums={[1, -1]}></OffsetBtnHours>
+                  {item.costOfTime.hours} h<OffsetBtnHours item={item} nums={[1, -1]}></OffsetBtnHours>
                 </td>
-                <td>{item.costOfTime.minutes} m</td>
+                <td>
+                  {item.costOfTime.minutes} m{" "}
+                  <OffsetBtnArray
+                    item={item}
+                    nums={[1, -1]}
+                    cb={(item, num) => addItemCost(item, { minutes: num })}
+                  ></OffsetBtnArray>
+                </td>
                 <td>{format(item.time, "MM-dd HH:mm")}</td>
               </tr>
             )
