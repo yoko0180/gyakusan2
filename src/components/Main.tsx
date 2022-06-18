@@ -82,12 +82,16 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   }, [history.location, title])
 
   const addItem = () => {
+    const toNum = (text: string) => {
+      if (text === "") return 0
+      return +text
+    }
     const item: Item = {
       id: "item_" + Date.now(),
       label: inputLabel,
       costOfTime: {
-        hours: +inputHours,
-        minutes: +inputMinutes,
+        hours: toNum(inputHours),
+        minutes: toNum(inputMinutes),
       },
     }
 
@@ -97,15 +101,39 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     )
   }
 
+  const addDuration = (d1: Duration, d2: Duration): Duration => {
+    const toNum = (n: number|undefined) => {
+      if (n === undefined) return 0
+      if (n === null) return 0
+      return n
+    }
+    // const _add = (d1: Duration, d2: Duration) => {
+    //   return toNum(d1) + toNum(d2)
+    // }
+    const ret = {
+      ...d1,
+      hours: toNum(d1.hours) + toNum( d2.hours ),
+      minutes: toNum(d1.minutes) + toNum(d2.minutes),
+    }
+    console.log('addDuration', d1, d2, ret);
+    
+    return ret
+  }
   // 指定アイテムのコスト加算
   const addItemCost = (item: Item, du: Duration) => {
-    setItems(items.map(i => {
-      if (item.id === i.id) {
-        return item
-      }
-      return item
-    }))
-  
+    console.log('items', items);
+    
+    setItems(
+      items.map((i) => {
+        if (item.id === i.id) {
+          return {
+            ...i,
+            costOfTime: addDuration(i.costOfTime, du),
+          }
+        }
+        return i
+      })
+    )
   }
   const deleteItems = () => {
     setItems([])
@@ -161,7 +189,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   }> = ({ onClick, num, children }) => (
     <button className="bg-green-900 p-1 mx-2" onClick={onClick}>
       {num > 0 && "+"}
-      {num < 0 && "-"}
+      {/* {num < 0 && "-"} */}
       {num}
     </button>
   )
@@ -219,7 +247,19 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               <tr key={item.id}>
                 <td>{item.label}</td>
                 <td>
-                  {item.costOfTime.hours} h<OffsetBtn onClick={() => {}} num={1}></OffsetBtn>
+                  {item.costOfTime.hours} h
+                  <OffsetBtn
+                    onClick={() => {
+                      addItemCost(item, { hours: 1 })
+                    }}
+                    num={1}
+                  ></OffsetBtn>
+                  <OffsetBtn
+                    onClick={() => {
+                      addItemCost(item, { hours: -1 })
+                    }}
+                    num={-1}
+                  ></OffsetBtn>
                 </td>
                 <td>{item.costOfTime.minutes} m</td>
                 <td>{format(item.time, "MM-dd HH:mm")}</td>
