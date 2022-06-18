@@ -1,3 +1,4 @@
+import { add, parse, format } from "date-fns"
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 // import json from './commands.json'
@@ -33,27 +34,27 @@ const OptionCheckbox: React.FC<{
 
 // 逆算アイテム
 // 所要時間を持ち、アイテムを複数積み上げることで逆算していく
+type CostTime = {
+  hour: number
+  minutes: number
+}
 type Item = {
   id: string
   label: string
-  costOfTime: {
-    hour: number
-    minutes: number
-  }
+  costOfTime: CostTime
 }
 type ItemView = Item & {
-  time: {
-    hour: number
-    minutes: number
-  }
+  time: Date
 }
 type Mode = "edit" | "check"
 type ViewMode = "selectShop" | "jouon" | "chilled"
 
 const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const STORAGE_KEY = "items"
+  //
+  const [goalDate, setGoalDate] = useState<Date>(add(new Date(), { hours: 10 }))
   const [items, setItems] = useState<Item[]>([])
-  const [itemsView , setItemsView] = useState<ItemView[]>([])
+  const [itemsView, setItemsView] = useState<ItemView[]>([])
   const [mode, setMode] = useState<Mode>("edit")
   const history = useHistory()
   const title = "逆算"
@@ -81,19 +82,23 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   }, [history.location, title])
 
   const addItem = () => {
-    const item = 
-        {
-          id: "item_" + Date.now(),
-          label: inputLabel,
-          costOfTime: {
-            hour: +inputHours,
-            minutes: +inputMinutes,
-          },
-        }
+    const item = {
+      id: "item_" + Date.now(),
+      label: inputLabel,
+      costOfTime: {
+        hour: +inputHours,
+        minutes: +inputMinutes,
+      },
+    }
 
     setItems(
-      [ item ].concat(items)
+      // [ item ].concat(items) // 前に追加
+      items.concat([item]) // うしろに追加
     )
+  }
+
+  const deleteItems = () => {
+    setItems([])
   }
 
   // const BtnAddNum: React.FC<{
@@ -113,15 +118,31 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     save(STORAGE_KEY, items)
 
     // 最後のアイテムの時刻を基準に順番に時刻を算出する
-    setItemsView(items.map(item => {
-      return {
-        ...item,
-          time: {
-            hour: 0,
-            minutes: 0,
+    const costDuration = (cost: CostTime) => ({ hours: cost.hour * -1, minutes: cost.minutes * -1 })
+    let preTime = goalDate
+    setItemsView(
+      items
+        .map((item, index) => {
+          let time = goalDate
+          const cost = costDuration(item.costOfTime)
+          // itemsには内部的にゴールから順のリスト
+          // 順番にコスト時間を引いた時刻を算出していく
+          // if (index !== items.length -1 ) {
+          if (index === 0) {
+            time = add(goalDate, cost)
           }
-      }
-    }))
+          if (index !== 0) {
+            const pre = items[index - 1]
+            time = add(preTime, cost)
+          }
+          preTime = time
+          return {
+            ...item,
+            time,
+          }
+        })
+        .reverse()
+    )
   }, [items])
 
   const OffsetBtn: React.FC<{
@@ -146,38 +167,41 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
           onChange={(e) => setInputLabel(e.target.value)}
           value={inputLabel}
         />
-        <div className="m-2">
-          <input
-            className="input-time p-2"
-            type="number"
-            name="hour"
-            maxLength={2}
-            min={0}
-            onChange={(e) => setInputHours(e.target.value)}
-            value={inputHours}
-          />
-          hours
-          <input
-            className="input-time p-2"
-            type="number"
-            name="minutes"
-            maxLength={2}
-            min={0}
-            onChange={(e) => setInputMinutes(e.target.value)}
-            value={inputMinutes}
-          />
-          minutes
-        </div>
-        <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={addItem}>
-          追加
-        </button>
       </label>
+      <div className="m-2">
+        <input
+          className="input-time p-2"
+          type="number"
+          name="hour"
+          maxLength={2}
+          min={0}
+          onChange={(e) => setInputHours(e.target.value)}
+          value={inputHours}
+        />
+        hours
+        <input
+          className="input-time p-2"
+          type="number"
+          name="minutes"
+          maxLength={2}
+          min={0}
+          onChange={(e) => setInputMinutes(e.target.value)}
+          value={inputMinutes}
+        />
+        minutes
+      </div>
+      <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={addItem}>
+        追加
+      </button>
+      <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={deleteItems}>
+        delete all
+      </button>
 
       <table className="border">
         <thead>
           <th>label</th>
           <th colSpan={2}>所要時間</th>
-          <th colSpan={2}>時刻</th>
+          <th>時刻</th>
         </thead>
         <tbody>
           {itemsView.map((item) => {
@@ -188,11 +212,14 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                   {item.costOfTime.hour} h<OffsetBtn onClick={() => {}} num={1}></OffsetBtn>
                 </td>
                 <td>{item.costOfTime.minutes} m</td>
-                <td>{item.time.hour}</td>
-                <td>{item.time.minutes}</td>
+                <td>{format(item.time, "MM-dd HH:mm")}</td>
               </tr>
             )
           })}
+          <tr>
+            <td colSpan={3}>goal</td>
+            <td>{format(goalDate, "MM-dd HH:mm")}</td>
+          </tr>
         </tbody>
       </table>
       <div className="three wide column text-left mt-5">© 2022</div>
