@@ -1,3 +1,4 @@
+import * as df from "date-fns"
 import { add, sub, parse, format, Duration } from "date-fns"
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
@@ -52,7 +53,8 @@ type ViewMode = "selectShop" | "jouon" | "chilled"
 const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const STORAGE_KEY = "items"
   //
-  const [goalDate, setGoalDate] = useState<Date>(add(new Date(), { hours: 10 }))
+  const initialGoal = df.set(add(new Date(), { hours: 10 }), {minutes:0})
+  const [goalDate, setGoalDate] = useState<Date>(initialGoal)
   const [items, setItems] = useState<Item[]>([])
   const [itemsView, setItemsView] = useState<ItemView[]>([])
   const [mode, setMode] = useState<Mode>("edit")
