@@ -49,8 +49,7 @@ type Item = {
 type ItemView = Item & {
   time: Date
 }
-type Mode = "edit" | "check"
-type ViewMode = "selectShop" | "jouon" | "chilled"
+type ViewMode = "view" | "edit"
 
 const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const refEditText = useRef<HTMLInputElement>(null)
@@ -64,7 +63,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const [items, setItems] = useState<Item[]>([])
   const [itemsView, setItemsView] = useState<ItemView[]>([])
   const [editItem, setEditItem] = useState<Item>()
-  const [mode, setMode] = useState<Mode>("edit")
+  const [viewMode, setViewMode] = useState<ViewMode>("edit")
   const history = useHistory()
   const title = "逆算"
 
@@ -88,11 +87,9 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
     try {
       setGoalDate(df.parseISO(load(STORAGE_KEY_GOAL)))
-      console.log("load goal ok");
-      
+      console.log("load goal ok")
     } catch (error) {
-      
-      console.log("load goal fatal!!");
+      console.log("load goal fatal!!")
     }
   }, [])
 
@@ -268,11 +265,17 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
   const CtrlBtn: React.FC<{
     onClick: React.MouseEventHandler<HTMLButtonElement>
-  }> = ({ onClick, children }) => (
-    <button className="ctrl-btn bg-green-900 p-2 m-1 rounded " onClick={onClick}>
-      {children}
-    </button>
-  )
+  }> = ({ onClick, children }) => {
+    return (
+      <>
+        {viewMode === "edit" && (
+          <button className="ctrl-btn bg-green-900 p-2 m-1 rounded " onClick={onClick}>
+            {children}
+          </button>
+        )}
+      </>
+    )
+  }
 
   const OffsetBtn: React.FC<{
     onClick: React.MouseEventHandler<HTMLButtonElement>
@@ -383,6 +386,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       </button>
       <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={deleteItems}>
         delete all
+      </button>
+      <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={() => setViewMode("view")}>
+        view mode
+      </button>
+
+      <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={() => setViewMode("edit")}>
+        edit mode
       </button>
 
       <Modal show={showModal} onClose={() => setShowModal(false)}>
