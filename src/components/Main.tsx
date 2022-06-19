@@ -419,7 +419,9 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
           })}
           <tr>
             <td colSpan={3}>goal</td>
-            <td>{format(goalDate, "MM-dd HH:mm")}</td>
+            <td>
+              <TimeLabel time={goalDate}></TimeLabel>
+            </td>
           </tr>
         </tbody>
       </table>
