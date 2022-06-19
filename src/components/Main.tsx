@@ -74,13 +74,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const [inputHours, setInputHours] = useState("")
   const [inputMinutes, setInputMinutes] = useState("")
   const [inputEditItemLabel, setInputEditItemLabel] = useState("")
-  const [inputImpExp , setInputImpExp] = useState("")
-  
+  const [inputImpExp, setInputImpExp] = useState("")
+
   const importData = () => {
     try {
       setItems(JSON.parse(inputImpExp))
     } catch (error) {
-      console.log('import error', error);
+      console.log("import error", error)
     }
   }
   // 初期処理
@@ -121,7 +121,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         hours: toNum(inputHours),
         minutes: toNum(inputMinutes),
       },
-      off: false
+      off: false,
     }
 
     setItems(
@@ -173,11 +173,11 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   }
   const offItem = (item: Item, value: boolean) => {
     setItems(
-      items.map(i => {
+      items.map((i) => {
         if (item.id === i.id) {
           return {
             ...i,
-            off: value
+            off: value,
           }
         }
         return i
@@ -259,7 +259,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     // 最後のアイテムの時刻を基準に順番に時刻を算出する
     // const costDuration = (cost: Duration) => ({ hours: cost.hours * -1, minutes: cost.minutes * -1 })
     let preTime = goalDate
-    const _items = viewMode === "edit" ? items : items.filter(i => i.off === undefined || i.off === false)
+    const _items = viewMode === "edit" ? items : items.filter((i) => i.off === undefined || i.off === false)
     setItemsView(
       _items
         .map((item, index) => {
@@ -377,6 +377,9 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
   return (
     <div className="App p-5">
+      <div>
+        <span>ver {pkg.version}</span>
+      </div>
       <label htmlFor="">
         項目追加
         <input
@@ -424,10 +427,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         edit mode
       </button>
 
-      <button className="bg-green-900 p-2 m-1 rounded " onClick={() => {
-        setInputImpExp(JSON.stringify(items))
-        setShowModalImpExp(true)
-      }}>
+      <button
+        className="bg-green-900 p-2 m-1 rounded "
+        onClick={() => {
+          setInputImpExp(JSON.stringify(items))
+          setShowModalImpExp(true)
+        }}
+      >
         import/export
       </button>
 
@@ -446,7 +452,15 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         </button>
       </Modal>
       <Modal show={showModalImpExp} onClose={() => setShowModalImpExp(false)}>
-        <textarea className="input"  name="" id="" cols={70} rows={6} value={inputImpExp} onChange={(e) => setInputImpExp(e.target.value)}></textarea>
+        <textarea
+          className="input"
+          name=""
+          id=""
+          cols={70}
+          rows={6}
+          value={inputImpExp}
+          onChange={(e) => setInputImpExp(e.target.value)}
+        ></textarea>
         <button className="btn bg-green-900 p-2 m-1 rounded " onClick={importData}>
           import
         </button>
@@ -475,7 +489,9 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                     </CtrlBtn>
                     <CtrlBtn onClick={() => moveUpItem(item)}>up</CtrlBtn>
                     <CtrlBtn onClick={() => moveDownItem(item)}>down</CtrlBtn>
-                    {( item.off === undefined || item.off === false ) && <CtrlBtn onClick={() => offItem(item, true)}>off</CtrlBtn>}
+                    {(item.off === undefined || item.off === false) && (
+                      <CtrlBtn onClick={() => offItem(item, true)}>off</CtrlBtn>
+                    )}
                     {item.off === true && <CtrlBtn onClick={() => offItem(item, false)}>on</CtrlBtn>}
                   </div>
                 </td>
