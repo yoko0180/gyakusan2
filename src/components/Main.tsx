@@ -395,7 +395,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={addItem}>
         追加
       </button>
-      <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={deleteItems}>
+      <button className="deleteall-btn bg-red-900 p-2 m-1 rounded " onClick={deleteItems}>
         delete all
       </button>
       <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setViewMode("view")}>
