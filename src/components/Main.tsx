@@ -245,16 +245,18 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         })
         .reverse()
     )
-  }, [items])
+  }, [items, goalDate])
 
   const OffsetBtn: React.FC<{
     onClick: React.MouseEventHandler<HTMLButtonElement>
     num: number
-  }> = ({ onClick, num, children }) => (
+    label?: string
+  }> = ({ onClick, num, label, children }) => (
     <button className="bg-green-900 p-1 mx-2" onClick={onClick}>
       {num > 0 && "+"}
       {/* {num < 0 && "-"} */}
       {num}
+      {label}
     </button>
   )
   const OffsetBtnArray: React.FC<{
@@ -418,7 +420,37 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
             )
           })}
           <tr>
-            <td colSpan={3}>goal</td>
+            <td colSpan={3}>goal
+            <OffsetBtn
+              onClick={() => {
+                setGoalDate(df.add(goalDate, {hours: 1}))
+              }}
+              num={1}
+              label="hour"
+            ></OffsetBtn>
+            <OffsetBtn
+              onClick={() => {
+                setGoalDate(df.add(goalDate, {hours: -1}))
+              }}
+              num={-1}
+              label="hour"
+            ></OffsetBtn>
+            <OffsetBtn
+              onClick={() => {
+                setGoalDate(df.add(goalDate, {minutes: 10}))
+              }}
+              num={10}
+              label="min"
+            ></OffsetBtn>
+            <OffsetBtn
+              onClick={() => {
+                setGoalDate(df.add(goalDate, {minutes: -10}))
+              }}
+              num={-10}
+              label="min"
+            ></OffsetBtn>
+            
+            </td>
             <td>
               <TimeLabel time={goalDate}></TimeLabel>
             </td>
