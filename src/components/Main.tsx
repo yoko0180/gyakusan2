@@ -56,6 +56,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const refEditText = useRef<HTMLInputElement>(null)
 
   const STORAGE_KEY = "items"
+  const STORAGE_KEY_GOAL = "goal"
   //
   const initialGoal = df.set(add(new Date(), { hours: 10 }), { minutes: 0 })
   const [showModal, setShowModal] = useState(false)
@@ -83,6 +84,15 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       setItems(value)
     } catch (e) {
       console.log("setItems error on load value.", e)
+    }
+
+    try {
+      setGoalDate(df.parseISO(load(STORAGE_KEY_GOAL)))
+      console.log("load goal ok");
+      
+    } catch (error) {
+      
+      console.log("load goal fatal!!");
     }
   }, [])
 
@@ -221,6 +231,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   useEffect(() => {
     // データ更新があったらセーブする
     save(STORAGE_KEY, items)
+    save(STORAGE_KEY_GOAL, goalDate)
 
     // 最後のアイテムの時刻を基準に順番に時刻を算出する
     // const costDuration = (cost: Duration) => ({ hours: cost.hours * -1, minutes: cost.minutes * -1 })
