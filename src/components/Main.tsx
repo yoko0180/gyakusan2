@@ -59,6 +59,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   //
   const initialGoal = df.set(add(new Date(), { hours: 10 }), { minutes: 0 })
   const [showModal, setShowModal] = useState(false)
+  const [showModalImpExp, setShowModalImpExp] = useState(false)
   const [goalDate, setGoalDate] = useState<Date>(initialGoal)
   const [items, setItems] = useState<Item[]>([])
   const [itemsView, setItemsView] = useState<ItemView[]>([])
@@ -71,6 +72,15 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const [inputHours, setInputHours] = useState("")
   const [inputMinutes, setInputMinutes] = useState("")
   const [inputEditItemLabel, setInputEditItemLabel] = useState("")
+  const [inputImpExp , setInputImpExp] = useState("")
+  
+  const importData = () => {
+    try {
+      setItems(JSON.parse(inputImpExp))
+    } catch (error) {
+      console.log('import error', error);
+    }
+  }
   // 初期処理
   useEffect(() => {
     console.log("load...")
@@ -396,6 +406,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         edit mode
       </button>
 
+      <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={() => {
+        setInputImpExp(JSON.stringify(items))
+        setShowModalImpExp(true)
+      }}>
+        import/export
+      </button>
+
       <Modal show={showModal} onClose={() => setShowModal(false)}>
         <input
           className="input input-edit-label text-2xl p-2 rounded"
@@ -408,6 +425,12 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         />
         <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={editItemLabel}>
           update
+        </button>
+      </Modal>
+      <Modal show={showModalImpExp} onClose={() => setShowModalImpExp(false)}>
+        <textarea className="input"  name="" id="" cols={70} rows={6} value={inputImpExp} onChange={(e) => setInputImpExp(e.target.value)}></textarea>
+        <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={importData}>
+          import
         </button>
       </Modal>
       <table className="border">
