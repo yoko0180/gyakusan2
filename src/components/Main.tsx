@@ -403,7 +403,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         <thead>
           <th>label</th>
           <th colSpan={2}>所要時間</th>
-          <th>時刻</th>
+          <th>start時刻</th>
         </thead>
         <tbody>
           {itemsView.map((item) => {
