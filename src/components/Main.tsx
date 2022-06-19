@@ -168,6 +168,22 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
     setItems(new_items.reverse())
   }
+  const moveDownItem = (item: Item) => {
+    const _items = items.reverse()
+    const index = _items.findIndex((i) => i.id === item.id)
+    if (index === items.length -1 ) return
+    let front = _items.slice(0, index)
+    let back = _items.slice(index + 2)
+    front.push(_items[index + 1])
+
+    console.log("front", front)
+    console.log("back", back)
+
+    const new_items = front.concat([item]).concat(back)
+    console.log("new_items", new_items)
+
+    setItems(new_items.reverse())
+  }
   // const BtnAddNum: React.FC<{
   //   shop: Shop
   //   hin: Hinmoku
@@ -329,6 +345,9 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
                   <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={() => moveUpItem(item)}>
                     up
+                  </button>
+                  <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={() => moveDownItem(item)}>
+                    down
                   </button>
                 </td>
                 <td>
