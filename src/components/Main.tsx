@@ -255,17 +255,25 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     refEditText.current?.focus()
   }, [showModal])
 
+  const CtrlBtn: React.FC<{
+    onClick: React.MouseEventHandler<HTMLButtonElement>
+  }> = ({ onClick, children }) => (
+    <button className="ctrl-btn bg-green-900 p-2 m-1 rounded " onClick={onClick}>
+      {children}
+    </button>
+  )
+
   const OffsetBtn: React.FC<{
     onClick: React.MouseEventHandler<HTMLButtonElement>
     num: number
     label?: string
   }> = ({ onClick, num, label, children }) => (
-    <button className="bg-green-900 p-1 mx-2" onClick={onClick}>
+    <CtrlBtn onClick={onClick}>
       {num > 0 && "+"}
       {/* {num < 0 && "-"} */}
       {num}
       {label}
-    </button>
+    </CtrlBtn>
   )
   const OffsetBtnArray: React.FC<{
     item: Item
@@ -392,35 +400,36 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               <tr key={item.id}>
                 <td>
                   <ItemLabel>{item.label}</ItemLabel>
-                  <button
-                    className="add-btn bg-green-900 p-2 m-1 rounded "
-                    onClick={() => {
-                      setEditItem(item)
-                      setInputEditItemLabel(item.label)
-                      setShowModal(true)
-                    }}
-                  >
-                    edit
-                  </button>
-                  <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={() => moveUpItem(item)}>
-                    up
-                  </button>
-                  <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={() => moveDownItem(item)}>
-                    down
-                  </button>
+                  <div className="ctrl">
+                    <CtrlBtn
+                      onClick={() => {
+                        setEditItem(item)
+                        setInputEditItemLabel(item.label)
+                        setShowModal(true)
+                      }}
+                    >
+                      edit
+                    </CtrlBtn>
+                    <CtrlBtn onClick={() => moveUpItem(item)}>up</CtrlBtn>
+                    <CtrlBtn onClick={() => moveDownItem(item)}>down</CtrlBtn>
+                  </div>
                 </td>
                 <td>
                   {/* <span className="hours-label text-2xl">{item.costOfTime.hours}</span>h */}
                   <CostLabel num={item.costOfTime.hours} label="h"></CostLabel>
-                  <OffsetBtnHours item={item} nums={[1, -1]}></OffsetBtnHours>
+                  <div className="ctrl">
+                    <OffsetBtnHours item={item} nums={[1, -1]}></OffsetBtnHours>
+                  </div>
                 </td>
                 <td>
                   <CostLabel num={item.costOfTime.minutes} label="m"></CostLabel>
-                  <OffsetBtnArray
-                    item={item}
-                    nums={[5, 10, -5, -10]}
-                    cb={(item, num) => addItemCost(item, { minutes: num })}
-                  ></OffsetBtnArray>
+                  <div className="ctrl">
+                    <OffsetBtnArray
+                      item={item}
+                      nums={[5, 10, -5, -10]}
+                      cb={(item, num) => addItemCost(item, { minutes: num })}
+                    ></OffsetBtnArray>
+                  </div>
                 </td>
                 <td>
                   <TimeLabel time={item.time}></TimeLabel>
@@ -429,36 +438,36 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
             )
           })}
           <tr>
-            <td colSpan={3}>goal
-            <OffsetBtn
-              onClick={() => {
-                setGoalDate(df.add(goalDate, {hours: 1}))
-              }}
-              num={1}
-              label="hour"
-            ></OffsetBtn>
-            <OffsetBtn
-              onClick={() => {
-                setGoalDate(df.add(goalDate, {hours: -1}))
-              }}
-              num={-1}
-              label="hour"
-            ></OffsetBtn>
-            <OffsetBtn
-              onClick={() => {
-                setGoalDate(df.add(goalDate, {minutes: 10}))
-              }}
-              num={10}
-              label="min"
-            ></OffsetBtn>
-            <OffsetBtn
-              onClick={() => {
-                setGoalDate(df.add(goalDate, {minutes: -10}))
-              }}
-              num={-10}
-              label="min"
-            ></OffsetBtn>
-            
+            <td colSpan={3}>
+              goal
+              <OffsetBtn
+                onClick={() => {
+                  setGoalDate(df.add(goalDate, { hours: 1 }))
+                }}
+                num={1}
+                label="hour"
+              ></OffsetBtn>
+              <OffsetBtn
+                onClick={() => {
+                  setGoalDate(df.add(goalDate, { hours: -1 }))
+                }}
+                num={-1}
+                label="hour"
+              ></OffsetBtn>
+              <OffsetBtn
+                onClick={() => {
+                  setGoalDate(df.add(goalDate, { minutes: 10 }))
+                }}
+                num={10}
+                label="min"
+              ></OffsetBtn>
+              <OffsetBtn
+                onClick={() => {
+                  setGoalDate(df.add(goalDate, { minutes: -10 }))
+                }}
+                num={-10}
+                label="min"
+              ></OffsetBtn>
             </td>
             <td>
               <TimeLabel time={goalDate}></TimeLabel>
