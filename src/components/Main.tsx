@@ -47,8 +47,9 @@ type Item = {
   costOfTime: Duration
   off: boolean
 }
+type Time = Date | null
 type ItemView = Item & {
-  time: Date
+  time: Time
 }
 type ViewMode = "view" | "edit"
 
@@ -262,7 +263,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     setItemsView(
       _items
         .map((item, index) => {
-          let time = goalDate
+          let time: Time = goalDate
           const cost = item.costOfTime
           // itemsには内部的にゴールから順のリスト
           // 順番にコスト時間を引いた時刻を算出していく
@@ -274,7 +275,8 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
             const pre = items[index - 1]
             time = sub(preTime, cost)
           }
-          preTime = time
+          if (item.off === undefined || item.off === false) preTime = time
+          if (item.off) time = null
           return {
             ...item,
             time,
@@ -363,12 +365,12 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     )
   }
   const TimeLabel: React.FC<{
-    time: Date
+    time: Time
   }> = ({ time }) => {
     return (
       <>
-        <span className="hours-label text-xl text-gray-300">{format(time, "MM-dd")}</span>&nbsp;
-        <span className="hours-label text-2xl">{format(time, "HH:mm")}</span>
+        <span className="hours-label text-xl text-gray-300">{time && format(time, "MM-dd")}</span>&nbsp;
+        <span className="hours-label text-2xl">{time && format(time, "HH:mm")}</span>
       </>
     )
   }
