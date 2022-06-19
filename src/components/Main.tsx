@@ -299,7 +299,14 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
   return (
     <div className="App p-5">
-      <Modal></Modal>
+      <Modal show={showModal} onClose={() => setShowModal(false)}></Modal>
+      <button
+        onClick={() => {
+          setShowModal(true)
+        }}
+      >
+        modal
+      </button>
       <label htmlFor="">
         項目追加
         <input
