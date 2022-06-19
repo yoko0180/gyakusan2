@@ -59,6 +59,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const [goalDate, setGoalDate] = useState<Date>(initialGoal)
   const [items, setItems] = useState<Item[]>([])
   const [itemsView, setItemsView] = useState<ItemView[]>([])
+  const [editItem, setEditItem] = useState<Item>()
   const [mode, setMode] = useState<Mode>("edit")
   const history = useHistory()
   const title = "逆算"
@@ -66,6 +67,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const [inputLabel, setInputLabel] = useState("")
   const [inputHours, setInputHours] = useState("")
   const [inputMinutes, setInputMinutes] = useState("")
+  const [inputEditItemLabel, setInputEditItemLabel] = useState("")
   // 初期処理
   useEffect(() => {
     console.log("load...")
@@ -186,6 +188,21 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
     setItems(new_items.reverse())
   }
+  const editItemLabel = () => {
+    if (!editItem) return
+    setItems(
+      items.map((item) => {
+        if (item.id === editItem.id) {
+          return {
+            ...item,
+            label: inputEditItemLabel,
+          }
+        }
+        return item
+      })
+    )
+    setShowModal(false)
+  }
   // const BtnAddNum: React.FC<{
   //   shop: Shop
   //   hin: Hinmoku
@@ -299,14 +316,6 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
   return (
     <div className="App p-5">
-      <Modal show={showModal} onClose={() => setShowModal(false)}></Modal>
-      <button
-        onClick={() => {
-          setShowModal(true)
-        }}
-      >
-        modal
-      </button>
       <label htmlFor="">
         項目追加
         <input
@@ -347,6 +356,19 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         delete all
       </button>
 
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <input
+          className="input text-2xl p-2 rounded"
+          type="text"
+          name=""
+          id=""
+          value={inputEditItemLabel}
+          onChange={(e) => setInputEditItemLabel(e.target.value)}
+        />
+        <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={editItemLabel}>
+          update
+        </button>
+      </Modal>
       <table className="border">
         <thead>
           <th>label</th>
@@ -359,6 +381,16 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               <tr key={item.id}>
                 <td>
                   <ItemLabel>{item.label}</ItemLabel>
+                  <button
+                    className="add-btn bg-green-900 p-2 m-1 rounded "
+                    onClick={() => {
+                      setEditItem(item)
+                      setInputEditItemLabel(item.label)
+                      setShowModal(true)
+                    }}
+                  >
+                    edit
+                  </button>
                   <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={() => moveUpItem(item)}>
                     up
                   </button>

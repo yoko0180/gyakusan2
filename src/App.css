@@ -30,6 +30,9 @@ body {
 .App-link {
   color: #61dafb;
 }
+.input {
+  color: black;
+}
 #input-label {
   color: black;
 }
