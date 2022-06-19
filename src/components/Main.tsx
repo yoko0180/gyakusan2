@@ -341,7 +341,8 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   }> = ({ time }) => {
     return (
       <>
-        <span className="hours-label text-2xl">{format(time, "MM-dd HH:mm")}</span>
+        <span className="hours-label text-xl text-gray-300">{format(time, "MM-dd")}</span>&nbsp;
+        <span className="hours-label text-2xl">{format(time, "HH:mm")}</span>
       </>
     )
   }
