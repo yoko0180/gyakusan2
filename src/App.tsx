@@ -1,4 +1,5 @@
 import './App.css'
+import './Modal.css'
 import './post.css'
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
 import Main from './components/Main'

@@ -6,6 +6,7 @@ import { useHistory } from "react-router"
 // import Hinmoku from "./Hinmoku"
 
 import pkg from "../../package.json"
+import Modal from "./Modal"
 
 function load(key: string): any {
   try {
@@ -54,6 +55,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const STORAGE_KEY = "items"
   //
   const initialGoal = df.set(add(new Date(), { hours: 10 }), { minutes: 0 })
+  const [showModal, setShowModal] = useState(false)
   const [goalDate, setGoalDate] = useState<Date>(initialGoal)
   const [items, setItems] = useState<Item[]>([])
   const [itemsView, setItemsView] = useState<ItemView[]>([])
@@ -297,6 +299,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
   return (
     <div className="App p-5">
+      <Modal></Modal>
       <label htmlFor="">
         項目追加
         <input
