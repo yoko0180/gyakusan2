@@ -398,15 +398,15 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={deleteItems}>
         delete all
       </button>
-      <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={() => setViewMode("view")}>
+      <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setViewMode("view")}>
         view mode
       </button>
 
-      <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={() => setViewMode("edit")}>
+      <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setViewMode("edit")}>
         edit mode
       </button>
 
-      <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={() => {
+      <button className="bg-green-900 p-2 m-1 rounded " onClick={() => {
         setInputImpExp(JSON.stringify(items))
         setShowModalImpExp(true)
       }}>
@@ -423,13 +423,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
           value={inputEditItemLabel}
           onChange={(e) => setInputEditItemLabel(e.target.value)}
         />
-        <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={editItemLabel}>
+        <button className="btn bg-green-900 p-2 m-1 rounded " onClick={editItemLabel}>
           update
         </button>
       </Modal>
       <Modal show={showModalImpExp} onClose={() => setShowModalImpExp(false)}>
         <textarea className="input"  name="" id="" cols={70} rows={6} value={inputImpExp} onChange={(e) => setInputImpExp(e.target.value)}></textarea>
-        <button className="deleteall-btn bg-green-900 p-2 m-1 rounded " onClick={importData}>
+        <button className="btn bg-green-900 p-2 m-1 rounded " onClick={importData}>
           import
         </button>
       </Modal>
