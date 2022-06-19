@@ -171,7 +171,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const moveDownItem = (item: Item) => {
     const _items = items.reverse()
     const index = _items.findIndex((i) => i.id === item.id)
-    if (index === items.length -1 ) return
+    if (index === items.length - 1) return
     let front = _items.slice(0, index)
     let back = _items.slice(index + 2)
     front.push(_items[index + 1])
@@ -267,6 +267,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     )
   }
 
+  const ItemLabel: React.FC<{}> = ({ children }) => {
+    return (
+      <>
+        <span className="text-2xl">{children}</span>
+      </>
+    )
+  }
   const CostLabel: React.FC<{
     num: number | undefined
     label: string
@@ -341,8 +348,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
             return (
               <tr key={item.id}>
                 <td>
-                  {item.label}
-
+                  <ItemLabel>{item.label}</ItemLabel>
                   <button className="add-btn bg-green-900 p-2 m-1 rounded " onClick={() => moveUpItem(item)}>
                     up
                   </button>
@@ -359,7 +365,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                   <CostLabel num={item.costOfTime.minutes} label="m"></CostLabel>
                   <OffsetBtnArray
                     item={item}
-                    nums={[1, 5, -1, -5]}
+                    nums={[5, 10, -5, -10]}
                     cb={(item, num) => addItemCost(item, { minutes: num })}
                   ></OffsetBtnArray>
                 </td>
