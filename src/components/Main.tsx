@@ -1,5 +1,6 @@
 import * as df from "date-fns"
 import { add, sub, parse, format, Duration } from "date-fns"
+import React, { useRef } from "react"
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 // import json from './commands.json'
@@ -52,6 +53,8 @@ type Mode = "edit" | "check"
 type ViewMode = "selectShop" | "jouon" | "chilled"
 
 const Main: React.FC<{ lang: string }> = ({ lang }) => {
+  const refEditText = useRef<HTMLInputElement>(null)
+
   const STORAGE_KEY = "items"
   //
   const initialGoal = df.set(add(new Date(), { hours: 10 }), { minutes: 0 })
@@ -247,6 +250,11 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     )
   }, [items, goalDate])
 
+  useEffect(() => {
+    if (!showModal) return
+    refEditText.current?.focus()
+  }, [showModal])
+
   const OffsetBtn: React.FC<{
     onClick: React.MouseEventHandler<HTMLButtonElement>
     num: number
@@ -360,7 +368,8 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
       <Modal show={showModal} onClose={() => setShowModal(false)}>
         <input
-          className="input text-2xl p-2 rounded"
+          className="input input-edit-label text-2xl p-2 rounded"
+          ref={refEditText}
           type="text"
           name=""
           id=""
