@@ -45,6 +45,7 @@ type Item = {
   id: string
   label: string
   costOfTime: Duration
+  off: boolean
 }
 type ItemView = Item & {
   time: Date
@@ -119,6 +120,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         hours: toNum(inputHours),
         minutes: toNum(inputMinutes),
       },
+      off: false
     }
 
     setItems(
@@ -162,6 +164,19 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
           return {
             ...i,
             costOfTime: addDuration(i.costOfTime, du),
+          }
+        }
+        return i
+      })
+    )
+  }
+  const offItem = (item: Item, value: boolean) => {
+    setItems(
+      items.map(i => {
+        if (item.id === i.id) {
+          return {
+            ...i,
+            off: value
           }
         }
         return i
@@ -243,8 +258,9 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     // 最後のアイテムの時刻を基準に順番に時刻を算出する
     // const costDuration = (cost: Duration) => ({ hours: cost.hours * -1, minutes: cost.minutes * -1 })
     let preTime = goalDate
+    const _items = viewMode === "edit" ? items : items.filter(i => i.off === undefined || i.off === false)
     setItemsView(
-      items
+      _items
         .map((item, index) => {
           let time = goalDate
           const cost = item.costOfTime
@@ -266,7 +282,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         })
         .reverse()
     )
-  }, [items, goalDate])
+  }, [items, goalDate, viewMode])
 
   useEffect(() => {
     if (!showModal) return
@@ -442,7 +458,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         <tbody>
           {itemsView.map((item) => {
             return (
-              <tr key={item.id}>
+              <tr key={item.id} className={item.off === true ? "off" : ""}>
                 <td>
                   <ItemLabel>{item.label}</ItemLabel>
                   <div className="ctrl">
@@ -457,6 +473,8 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                     </CtrlBtn>
                     <CtrlBtn onClick={() => moveUpItem(item)}>up</CtrlBtn>
                     <CtrlBtn onClick={() => moveDownItem(item)}>down</CtrlBtn>
+                    {( item.off === undefined || item.off === false ) && <CtrlBtn onClick={() => offItem(item, true)}>off</CtrlBtn>}
+                    {item.off === true && <CtrlBtn onClick={() => offItem(item, false)}>on</CtrlBtn>}
                   </div>
                 </td>
                 <td>

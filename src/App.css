@@ -72,3 +72,7 @@ table.hinmoku {
   color: #f99;
   font-size: 0.8em;
 }
+tr.off td{
+  /* color: red; */
+  background-color: #009;
+}
